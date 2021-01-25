@@ -4,19 +4,19 @@ const cors = require('cors')
 
 app.use(cors())
 
-const {
-  getTransactions, getTransaction, createTransaction,
-} = require('./transactions')
 const {createLinkToken} = require('./plaid')
-const {Signup, Login, Logout} = require('./auth')
+const {
+  signup, login, logout, getUser, addBankToken,
+  createUser,
+} = require('./auth')
 
 // Routes
-app.post('/create_link_token', createLinkToken)
-app.get('/transactions', getTransactions)
-app.get('/transaction', getTransaction)
-app.post('/transaction', createTransaction)
-app.post('/signup', Signup)
-app.post('/login', Login)
-app.post('/logout', Logout)
+app.post('/create-link-token/:uid', createLinkToken)
+app.post('/add-bank-token/:uid', addBankToken)
+app.post('/signup', signup)
+app.post('/login', login)
+app.post('/logout', logout)
+app.post('/user', createUser)
+app.get('/user/:uid', getUser)
 
 exports.api = functions.https.onRequest(app)

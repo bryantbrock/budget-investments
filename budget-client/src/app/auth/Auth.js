@@ -26,16 +26,23 @@ export const Auth = createSlice({
 
 // Actions
 export const authenticate = (type, data) => async dispatch => {
-  const method = type === "signup" ?
-    () => api.post('/signup', data) :
-    () => api.post('/login', data)
-
   dispatch(Auth.actions.isLoading())
 
+  let res, user
   try {
-    const res = await method()
+    if (type === "signup") {
+      res = await api.post('/signup', data)
+      user = await api.post('/user', res.data)
+    } else {
+      res = await api.post('/login', data)
+      user = await api.get(`/user/${res.data.uid}`)
+    }
 
-    dispatch(Auth.actions.loadUser(res.data))
+
+    dispatch(Auth.actions.loadUser(
+      Object.assign({}, res.data, user.data)
+    ))
+
     history.push('/')
   } catch (error) {
     dispatch(Auth.actions.error(error.message))
