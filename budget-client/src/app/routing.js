@@ -5,6 +5,8 @@ import {Dashboard} from 'app/dashboard'
 import {Login, Signup} from 'app/auth'
 import {connect} from 'react-redux'
 import {history} from '../history'
+import {smartLoad} from 'app/auth/Auth'
+import LoadingScreen from 'app/LoadingScreen'
 
 const routes = [
   {path: '/', title: 'Dashboard', component: Dashboard},
@@ -14,31 +16,38 @@ const routes = [
 
 const enhance = connect(
   state => ({
-    isAuthenticated: state.auth.isAuthenticated,
-  })
+    smartLoading: state.auth.smartLoading,
+  }), {smartLoad}
 )
 
 class Routing extends React.Component {
+  renderRoutes() {
+    return <Switch>
+    {routes.map((route, idx) =>
+      <Route
+        exact={!route.notExact}
+        key={idx}
+        path={route.path}
+        component={withRouter(route.component)}
+        title={route.title} />
+      )}
+    </Switch>
+  }
   render() {
-    // TODO: Redirect to Dashboard if Logged in
-    // TODO: Redirect to Login if address not found
+    const {smartLoading} = this.props
 
-    if (!this.props.isAuthenticated) {
+    if (
+      !localStorage.getItem('userId') ||
+      !localStorage.getItem('isAuth')
+    ) {
       history.push('/login')
+
+      return this.renderRoutes()
     }
 
-    return (
-      <Switch>
-      {routes.map((route, idx) =>
-        <Route
-          exact={!route.notExact}
-          key={idx}
-          path={route.path}
-          component={withRouter(route.component)}
-          title={route.title} />
-        )}
-      </Switch>
-    )
+    this.props.smartLoad()
+
+    return smartLoading ? <LoadingScreen /> : this.renderRoutes()
   }
 }
 

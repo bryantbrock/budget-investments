@@ -3,8 +3,8 @@ import {history} from '../../history'
 import {api} from 'app/api'
 
 const initialState = {
-  isAuthenticated: false,
   isLoading: false,
+  smartLoading: true,
   error: null,
   user: {},
 }
@@ -19,6 +19,7 @@ export const Auth = createSlice({
       ...state,
       user: action.payload,
       isLoading: false,
+      smartLoading: false,
       error: null,
     })
   }
@@ -43,9 +44,27 @@ export const authenticate = (type, data) => async dispatch => {
       Object.assign({}, res.data, user.data)
     ))
 
+    // Set in localStorage
+    localStorage.setItem('userId', user.data.uid)
+    localStorage.setItem('isAuth', true)
+
     history.push('/')
   } catch (error) {
     dispatch(Auth.actions.error(error.message))
+  }
+}
+
+export const smartLoad = () => async dispatch => {
+  // TODO: clear storage if expired
+  try {
+    const userUid = localStorage.getItem('userId')
+    const {data: user} = await api.get(`/user/${userUid}`)
+
+    dispatch(Auth.actions.loadUser(user))
+  } catch (err) {
+    dispatch(Auth.actions.error(err.message))
+
+    localStorage.clear()
   }
 }
 

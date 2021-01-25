@@ -5,7 +5,7 @@ import {api} from 'app/api'
 const initialState = {
   isLoading: false,
   error: null,
-  bankToken: null,
+  bankTokens: [],
   linkToken: null,
   transactions: [],
   accounts: [],
@@ -19,7 +19,10 @@ export const Finances = createSlice({
     isLoading: state => ({...state, isLoading: true, error: null}),
     error: (state, action) => ({...state, error: action.payload}),
     loadLinkToken: (state, action) => ({...state, linkToken: action.payload}),
-    loadBankToken: (state, action) => ({...state, bankToken: action.payload}),
+    loadBankToken: (state, action) => ({
+      ...state,
+      bankTokens: [...state.bankTokens, action.payload],
+    }),
     loadTransactions: (state, action) => ({
       ...state,
       transactions: action.payload,
@@ -36,10 +39,10 @@ export const Finances = createSlice({
 })
 
 // Actions
-export const addBankToken = (user, token, metadata) => async dispatch => {
+export const addBankToken = (user, tokens, metadata) => async dispatch => {
   dispatch(Finances.actions.loadAccounts(metadata.accounts))
   dispatch(Finances.actions.loadInstitute(metadata.institution.name))
-  dispatch(Finances.actions.loadBankToken(token))
+  dispatch(Finances.actions.loadBankToken(tokens))
 
   try {
     const {data} = await api.post(`/add-bank-token/${user.uid}`, {token})

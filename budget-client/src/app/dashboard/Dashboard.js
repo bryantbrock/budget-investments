@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {PlaidLink} from 'app/finances'
 import {connect} from 'react-redux'
 import {getLinkToken} from 'app/finances/Finances'
+import {history} from '../../history'
 
 const enhance = connect(
   state => ({
@@ -25,10 +26,14 @@ export class Dashboard extends Component {
     await getLinkToken(user.uid, user)
     this.setState({tokenFetched: true})
   }
+  logout() {
+    localStorage.clear()
+
+    history.push('/login')
+  }
   render() {
     const {linkToken} = this.props
     const {tokenFetched} = this.state
-    console.log(linkToken)
 
     if (tokenFetched || linkToken) {
       return <PlaidLink linkToken={linkToken} />
@@ -37,8 +42,11 @@ export class Dashboard extends Component {
     return <div>
       <h2>Dashboard</h2>
       <button onClick={this.fetchToken}>
-          Connect Bank
-        </button>
+        Connect Bank
+      </button>
+      <button onClick={this.logout}>
+        Log Out
+      </button>
     </div>
   }
 }
