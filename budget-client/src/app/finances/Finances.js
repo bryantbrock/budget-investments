@@ -5,11 +5,9 @@ import {api} from 'app/api'
 const initialState = {
   isLoading: false,
   error: null,
-  bankTokens: [],
   linkToken: null,
   transactions: [],
   accounts: [],
-  institutions: [],
 }
 
 export const Finances = createSlice({
@@ -19,10 +17,6 @@ export const Finances = createSlice({
     isLoading: state => ({...state, isLoading: true, error: null}),
     error: (state, action) => ({...state, error: action.payload}),
     loadLinkToken: (state, action) => ({...state, linkToken: action.payload}),
-    loadBankToken: (state, action) => ({
-      ...state,
-      bankTokens: [...state.bankTokens, action.payload],
-    }),
     loadTransactions: (state, action) => ({
       ...state,
       transactions: action.payload,
@@ -31,23 +25,25 @@ export const Finances = createSlice({
       ...state,
       accounts: action.payload,
     }),
-    loadInstitute: (state, action) => ({
-      ...state,
-      institutions: [...state.institutions, action.payload],
-    })
   }
 })
 
 // Actions
 export const addBankToken = (user, tokens, metadata) => async dispatch => {
-  dispatch(Finances.actions.loadAccounts(metadata.accounts))
-  dispatch(Finances.actions.loadInstitute(metadata.institution.name))
-  dispatch(Finances.actions.loadBankToken(tokens))
-
   try {
-    const {data} = await api.post(`/add-bank-token/${user.uid}`, {token})
+    const newToken = {
+      ...tokens,
+      institution: metadata.institution.name,
+    }
 
-    dispatch(Auth.actions.loadUser(Object.assign({}, user, {bankToken: data.linkToken})))
+    await api.post(`/add-bank-token/${user.uid}`, newToken)
+
+    const modifiedToken = {institution: newToken.institution}
+
+    dispatch(Auth.actions.loadUser({
+      ...user,
+      bankTokens: [...user.bankTokens, modifiedToken],
+    }))
   } catch (err) {
     dispatch(Finances.actions.error(err))
   }

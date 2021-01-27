@@ -1,5 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit'
 import {history} from '../../history'
+import {modifyUser} from 'app/auth/utils'
 import {api} from 'app/api'
 
 const initialState = {
@@ -39,9 +40,8 @@ export const authenticate = (type, data) => async dispatch => {
       user = await api.get(`/user/${res.data.uid}`)
     }
 
-
     dispatch(Auth.actions.loadUser(
-      Object.assign({}, res.data, user.data)
+      Object.assign({}, res.data, modifyUser(user))
     ))
 
     // Set in localStorage
@@ -60,7 +60,7 @@ export const smartLoad = () => async dispatch => {
     const userUid = localStorage.getItem('userId')
     const {data: user} = await api.get(`/user/${userUid}`)
 
-    dispatch(Auth.actions.loadUser(user))
+    dispatch(Auth.actions.loadUser(modifyUser(user)))
   } catch (err) {
     dispatch(Auth.actions.error(err.message))
 

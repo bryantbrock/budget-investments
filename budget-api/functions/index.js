@@ -4,14 +4,22 @@ const cors = require('cors')
 
 app.use(cors())
 
-const {createLinkToken} = require('./plaid')
 const {
-  signup, login, logout, getUser, addBankToken,
+  createLinkToken,
+  exchangeToken,
+} = require('./plaid')
+const {
+  signup,
+  login,
+  logout,
+  getUser,
+  addBankToken,
   createUser,
 } = require('./auth')
 
 // Routes
 app.post('/create-link-token/:uid', createLinkToken)
+app.post('/exchange-token/:publicToken', exchangeToken)
 app.post('/add-bank-token/:uid', addBankToken)
 app.post('/signup', signup)
 app.post('/login', login)
