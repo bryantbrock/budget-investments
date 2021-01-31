@@ -7,6 +7,7 @@ app.use(cors())
 const {
   createLinkToken,
   exchangeToken,
+  getTransactions,
 } = require('./plaid')
 const {
   signup,
@@ -21,6 +22,7 @@ const {
 app.post('/create-link-token/:uid', createLinkToken)
 app.post('/exchange-token/:publicToken', exchangeToken)
 app.post('/add-bank-token/:uid', addBankToken)
+app.get('/transactions/:uid', getTransactions)
 app.post('/signup', signup)
 app.post('/login', login)
 app.post('/logout', logout)

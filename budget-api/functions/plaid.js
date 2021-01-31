@@ -9,10 +9,10 @@ const client = new plaid.Client({
   env: plaid.environments.sandbox,
 })
 
-exports.getAccessToken = async req => {
-  const {uid, institution: inst} = req.body
+getAccessTokens = async req => {
+  const {uid, institution: inst = null} = req.body
 
-  let accessToken
+  let tokens
   try {
     const raw = await db.doc(`/users/${req.params.uid}`).get()
 
@@ -21,18 +21,20 @@ exports.getAccessToken = async req => {
     }
 
     const {bankTokens} = raw.data()
-    const [token] = bankTokens.filter(({institution}) => institution === inst)
 
-    accessToken = token.accessToken
+    if (inst) {
+      const token = bankTokens.filter(({institution}) => institution === inst)
 
-    if (!accessToken) {
-      throw HttpsError
+      tokens = token
     }
+
+    tokens = bankTokens
+
   } catch (err) {
     return res.status(500).json({error: err})
   }
 
-  return accessToken
+  return tokens
 }
 
 exports.createLinkToken = async (req, res) => {
@@ -64,8 +66,25 @@ exports.exchangeToken = async (req, res) => {
     .catch(err => res.status(500).json({error: err}))
 }
 
-exports.getAccounts = async (req, res) => {
-  const accessToken = await getAccessToken(req)
+exports.getTransactions = async (req, res) => {
+  const accessTokens = await getAccessTokens(req)
+  const now = new Date()
+  const endOfMonth = [
+    now.getFullYear(),
+    '01',
+    '25',
+  ].join('-')
+  const startOfMonth = [
+    now.getFullYear() - 1, // Have to do this due to the year change
+    '12',
+    '25',
+  ].join('-')
 
-  client.getAccounts(accessToken)
+  Promise.all(accessTokens.map(async ({accessToken, institution}) => {
+    const transactions =  await client
+      .getTransactions(accessToken, startOfMonth, endOfMonth)
+      .then(res => res.transactions)
+
+    return {institution, transactions}
+  })).then(result => res.status(200).json(result))
 }
