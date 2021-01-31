@@ -58,7 +58,7 @@ export const smartLoad = () => async dispatch => {
   // TODO: clear storage if expired
   try {
     const userUid = localStorage.getItem('userId')
-    const {data: user} = await api.get(`/user/${userUid}`)
+    const user = await api.get(`/user/${userUid}`)
 
     dispatch(Auth.actions.loadUser(modifyUser(user)))
   } catch (err) {

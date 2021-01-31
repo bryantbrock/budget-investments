@@ -5,9 +5,9 @@ import {api} from 'app/api'
 const initialState = {
   isLoading: false,
   error: null,
-  linkToken: null,
   transactions: [],
   accounts: [],
+  summary: {},
 }
 
 export const Finances = createSlice({
@@ -16,7 +16,7 @@ export const Finances = createSlice({
   reducers: {
     isLoading: state => ({...state, isLoading: true, error: null}),
     error: (state, action) => ({...state, error: action.payload}),
-    loadLinkToken: (state, action) => ({...state, linkToken: action.payload}),
+    loadSummary: (state, action) => ({...state, summary: action.payload}),
     loadTransactions: (state, action) => ({
       ...state,
       transactions: action.payload,
@@ -50,13 +50,41 @@ export const addBankToken = (user, tokens, metadata) => async dispatch => {
 }
 
 export const getLinkToken = uid => async dispatch => {
+  let res
   try {
-    const res = await api.post(`/create-link-token/${uid}`)
+    res = await api.post(`/create-link-token/${uid}`)
 
-    dispatch(Finances.actions.loadLinkToken(res.data.linkToken))
   } catch (err) {
     dispatch(Finances.actions.error(err))
   }
+
+  return res.data.linkToken
 }
+
+export const calculateSummary = accessId => async dispatch => {
+  let res
+  try {
+    res = await api.post(`/create-link-token/${uid}`)
+
+  } catch (err) {
+    dispatch(Finances.actions.error(err))
+  }
+
+  return res.data.linkToken
+}
+
+export const getTransactions = accessId => async dispatch => {
+  let res
+  try {
+    res = await api.post(`/create-link-token/${uid}`)
+
+  } catch (err) {
+    dispatch(Finances.actions.error(err))
+  }
+
+  return res.data.linkToken
+}
+
+
 
 export default Finances

@@ -1,0 +1,17 @@
+h1 {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+}
+.navbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 40px;
+}
+.navbar button {
+  margin-left: 30px;
+}
