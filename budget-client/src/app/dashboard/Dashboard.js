@@ -1,7 +1,9 @@
 import React, {Component} from 'react'
 import {PlaidLink} from 'react-plaid-link'
 import {connect} from 'react-redux'
-import {getLinkToken} from 'app/finances/Finances'
+import {
+  getLinkToken, loadBankTransactions,
+} from 'app/finances/Finances'
 import {history} from '../../history'
 import {Summary, Details} from 'app/dashboard'
 import {api} from 'app/api'
@@ -10,7 +12,7 @@ const enhance = connect(
   state => ({
     user: state.auth.user,
   }),
-  {getLinkToken}
+  {getLinkToken, loadBankTransactions}
 )
 
 export class Dashboard extends Component {
@@ -19,12 +21,14 @@ export class Dashboard extends Component {
     this.state = {
       token: null,
       loading: true,
-      summary: false,
-      details: false,
     }
     this.fetchToken = this.fetchToken.bind(this)
     this.onSuccess = this.onSuccess.bind(this)
-    this.setComplete = this.setComplete.bind(this)
+  }
+  async componentDidMount() {
+    await this.props.loadBankTransactions(this.props.user.uid)
+
+    this.setState({loading: false})
   }
   async onSuccess(token, metadata) {
     const {addBankToken, user} = this.props
@@ -40,15 +44,6 @@ export class Dashboard extends Component {
 
     document.querySelector('button[type="button"]').click()
   }
-  setComplete(entity) {
-    const {summary, details} = this.state
-
-    this.setState({[entity]: true})
-
-    if (summary && details) {
-      this.setState({loading: false})
-    }
-  }
   logout() {
     localStorage.clear()
 
@@ -56,6 +51,10 @@ export class Dashboard extends Component {
   }
   render() {
     const {token, loading} = this.state
+    const {user} = this.props
+
+    const bankConnected = user.connectedInstitutes &&
+      user.connectedInstitutes.length > 0
     const logoutClass = 'rounded border border-black px-2'
 
     return <div className="container">
@@ -73,11 +72,15 @@ export class Dashboard extends Component {
         </button>
       </div>
       <div className="flex justify-center pt-20">
-        {loading ? <div className="spinner spinner-md" /> :
-          <div>
-            <Summary finished={this.setComplete} />
-            <Details finished={this.setComplete} />
+        {loading && <div className="spinner spinner-md" />}
+        {!loading && bankConnected &&
+          <div className="flex justify-center pt-20">
+            <Summary />
+            <Details />
           </div>}
+        {!loading && !bankConnected && <div>
+          Please connect a bank to get started.
+        </div>}
       </div>
     </div>
   }

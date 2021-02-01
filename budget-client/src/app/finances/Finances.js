@@ -6,8 +6,11 @@ const initialState = {
   isLoading: false,
   error: null,
   transactions: [],
-  accounts: [],
-  summary: {},
+  summary: {
+    overUnder: 0,
+    income: 0,
+    expenses: 0,
+  },
 }
 
 export const Finances = createSlice({
@@ -20,10 +23,6 @@ export const Finances = createSlice({
     loadTransactions: (state, action) => ({
       ...state,
       transactions: action.payload,
-    }),
-    loadAccounts: (state, action) => ({
-      ...state,
-      accounts: action.payload,
     }),
   }
 })
@@ -61,28 +60,30 @@ export const getLinkToken = uid => async dispatch => {
   return res.data.linkToken
 }
 
-export const calculateSummary = accessId => async dispatch => {
-  let res
-  try {
-    res = await api.post(`/create-link-token/${uid}`)
+const summarize = data => {
+  let overUnder = 0
+  let income = 0
+  let expenses = 0
 
-  } catch (err) {
-    dispatch(Finances.actions.error(err))
-  }
+  data.map(datum => datum.summary)
+    .forEach(sum => {
+      overUnder += sum.overUnder
+      income += sum.income
+      expenses += sum.expenses
+    })
 
-  return res.data.linkToken
+  return {overUnder, income, expenses}
 }
 
-export const getTransactions = accessId => async dispatch => {
-  let res
+export const loadBankTransactions = uid => async dispatch => {
   try {
-    res = await api.post(`/create-link-token/${uid}`)
+    const {data} = await api.get(`/transactions/${uid}`)
 
+    dispatch(Finances.actions.loadSummary(summarize(data)))
+    dispatch(Finances.actions.loadTransactions(data))
   } catch (err) {
     dispatch(Finances.actions.error(err))
   }
-
-  return res.data.linkToken
 }
 
 

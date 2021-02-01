@@ -1,7 +1,7 @@
 const { HttpsError } = require('firebase-functions/lib/providers/https')
 const plaid = require('plaid')
 const {db} = require('./admin')
-const {unwrap, combine} = require('./utils')
+const {sum, cleanAmount, combine} = require('./utils')
 
 const client = new plaid.Client({
   clientID: '5e6ee25f8bf3880012c90ad0',
@@ -81,10 +81,27 @@ exports.getTransactions = async (req, res) => {
   ].join('-')
 
   Promise.all(accessTokens.map(async ({accessToken, institution}) => {
-    const transactions =  await client
+    const data =  await client
       .getTransactions(accessToken, startOfMonth, endOfMonth)
-      .then(res => res.transactions)
+      .then(result => result.transactions)
 
-    return {institution, transactions}
+    const cleanData = data.map(transaction =>
+      combine(
+        transaction, institution,
+        {amount: transaction.amount}
+        // {amount: cleanAmount(transaction.amount)}
+      )
+    )
+
+    const amounts = cleanData.map(({amount}) => amount)
+    const overUnder = sum(amounts)
+    const expenses = sum(amounts.filter(val => val > 0))
+    const income = sum(amounts.filter(val => val < 0))
+
+    return {
+      institution,
+      transactions: cleanData,
+      summary: {overUnder, expenses, income}
+    }
   })).then(result => res.status(200).json(result))
 }
