@@ -1,6 +1,34 @@
+* {
+  color: #454545;
+  font-size: 14px;
+}
 h1 {
   font-size: 2em;
   font-weight: bold;
+}
+h2 {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+a {
+  cursor: pointer;
+}
+
+input[type=password], input[type=email] {
+  border: 1px solid #e7e7e7;
+  border-radius: 5px;
+  width: 100%;
+  padding: 12px 20px;
+  margin: 10px 0;
+}
+
+button[type=submit] {
+  background: #5a64f3;
+  color: #FFFFFF;
+  padding: 14px;
+  border-radius: 5px;
+  margin: 2rem 0;
+  width: 100%;
 }
 
 .container {
@@ -14,4 +42,33 @@ h1 {
 }
 .navbar button {
   margin-left: 30px;
+}
+.card-lg {
+  padding: 30px;
+  box-shadow: 0 5px 11px 1px #dadada;
+  border-radius: 7px;
+}
+.card-sm {
+  padding: 15px;
+  box-shadow: 0 5px 11px 1px #dadada;
+  border-radius: 7px;
+}
+.login {
+  width: 540px;
+  background-color: #FFFFFF;
+}
+.error {
+  border-radius: 3px;
+  border: 1px solid #ec6d6d85;
+  color: #ec6d6d;
+  background-color: #ec6d6d15;
+}
+a.anchor {
+  color: #5a64f3;
+}
+a.anchor:hover {
+  color: #454545;
+}
+.dont-have-account {
+  width: 540px;
 }

@@ -20,7 +20,12 @@ exports.login = (req, res) =>
 
 exports.logout = (req, res) =>
   firebase.auth().signOut()
-    .then(() => res.status(200).json({message: 'Success'}))
+    .then(() => res.status(200).json({success: true}))
+    .catch(err => res.status(500).json({error: err}))
+
+exports.resetPassword = (req, res) =>
+  firebase.auth().sendPasswordResetEmail(req.params.email)
+    .then(() => res.status(200).json({success: true}))
     .catch(err => res.status(500).json({error: err}))
 
 

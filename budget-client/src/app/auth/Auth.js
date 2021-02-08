@@ -1,5 +1,4 @@
 import {createSlice} from '@reduxjs/toolkit'
-import {history} from '../../history'
 import {modifyUser} from 'app/auth/utils'
 import {api} from 'app/api'
 
@@ -16,6 +15,7 @@ export const Auth = createSlice({
   reducers: {
     isLoading: state => ({...state, isLoading: true, error: null}),
     error: (state, action) => ({...state, error: action.payload}),
+    resetError: state => ({...state, error: null}),
     loadUser: (state, action) => ({
       ...state,
       user: action.payload,
@@ -27,12 +27,24 @@ export const Auth = createSlice({
 })
 
 // Actions
+export const resetError = () => dispatch => dispatch(Auth.actions.resetError())
 export const authenticate = (type, data) => async dispatch => {
   dispatch(Auth.actions.isLoading())
 
   let res, user
   try {
     if (type === "signup") {
+
+      // Check all fields are filled
+      if (!data.password || !data.confirmPassword || !data.email) {
+        return {success: false, error: 'Please fill out all fields'}
+      }
+
+      // Validate info before requesting
+      if (data.password !== data.confirmPassword) {
+        return {success: false, error: 'Passwords do not match'}
+      }
+
       res = await api.post('/signup', data)
       user = await api.post('/user', res.data)
     } else {
@@ -48,9 +60,11 @@ export const authenticate = (type, data) => async dispatch => {
     localStorage.setItem('userId', user.data.uid)
     localStorage.setItem('isAuth', true)
 
-    history.push('/')
-  } catch (error) {
-    dispatch(Auth.actions.error(error.message))
+    return {success: true}
+  } catch (err) {
+    dispatch(Auth.actions.error(err.message))
+
+    return {success: false, error: 'Email already in use or password must be at least 6 characters'}
   }
 }
 

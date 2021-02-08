@@ -16,6 +16,7 @@ const {
   getUser,
   addBankToken,
   createUser,
+  resetPassword,
 } = require('./auth')
 
 // Routes
@@ -23,6 +24,7 @@ app.post('/create-link-token/:uid', createLinkToken)
 app.post('/exchange-token/:publicToken', exchangeToken)
 app.post('/add-bank-token/:uid', addBankToken)
 app.get('/transactions/:uid', getTransactions)
+app.post('/reset-password/:email', resetPassword)
 app.post('/signup', signup)
 app.post('/login', login)
 app.post('/logout', logout)

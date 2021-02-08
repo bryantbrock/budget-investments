@@ -1,17 +1,19 @@
 import React from 'react'
+import {Login, Signup, ResetPassword} from 'app/auth'
 import {Switch, Route} from 'react-router-dom'
 import {withRouter} from 'react-router-dom'
 import {Dashboard} from 'app/dashboard'
-import {Login, Signup} from 'app/auth'
 import {connect} from 'react-redux'
 import {history} from '../history'
 import {smartLoad} from 'app/auth/Auth'
 import LoadingScreen from 'app/LoadingScreen'
 
+const publicRoutes = ['/signup', '/reset-password']
 const routes = [
+  {path: '/reset-password', title: 'Reset Password', component: ResetPassword},
   {path: '/', title: 'Dashboard', component: Dashboard},
-  {path: '/login', title: 'Login', component: Login},
   {path: '/signup', title: 'Signup', component: Signup},
+  {path: '/login', title: 'Login', component: Login},
 ]
 
 const enhance = connect(
@@ -40,6 +42,12 @@ class Routing extends React.Component {
       !localStorage.getItem('userId') ||
       !localStorage.getItem('isAuth')
     ) {
+
+      // Don't redirect if a public route
+      if (publicRoutes.includes(window.location.pathname)) {
+        return this.renderRoutes()
+      }
+
       history.push('/login')
 
       return this.renderRoutes()

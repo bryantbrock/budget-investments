@@ -4,6 +4,7 @@ module.exports = {
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
   darkMode: false,
   theme: {
+    textColor: theme => theme('colors'),
     colors: {
       black: '#454545',
       white: '#ffffff',
