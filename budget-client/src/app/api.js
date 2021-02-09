@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const baseUrl = 'http://localhost:5000/budget-a591b/us-central1/api'
-// const baseUrl = 'https://us-central1-budget-a591b.cloudfunctions.net/api'
+// const baseUrl = 'http://localhost:5000/budget-a591b/us-central1/api'
+const baseUrl = 'https://us-central1-budget-a591b.cloudfunctions.net/api'
 
 // TODO: update firebase rules to allow only requests from this app.
 //    - Make a key and store in env variabales

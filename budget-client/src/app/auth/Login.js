@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {authenticate, resetError} from 'app/auth/Auth'
 import {Anchor} from 'components'
-import {history} from '../../history'
+import {navigate} from 'navigation'
 
 const enhance = connect(
   state => ({
@@ -40,7 +40,7 @@ export class Login extends Component {
 
     const data = await this.props.authenticate('login', this.state)
 
-    return data.success ? history.push('/') : this.setState({loading: false})
+    return data.success ? navigate('/') : this.setState({loading: false})
   }
   render() {
     const {error} = this.props
@@ -59,7 +59,7 @@ export class Login extends Component {
             onChange={this.onChange}/>
           <div className="pt-6 flex justify-between">
             <label>Password</label>
-            <Anchor onClick={() => history.push('/reset-password')}>Forgot your password?</Anchor>
+            <Anchor onClick={() => navigate('/reset-password')}>Forgot your password?</Anchor>
           </div>
           <input
             type="password"
@@ -71,7 +71,7 @@ export class Login extends Component {
             </button>
         </form>
         <div className="mx-auto">
-          Don't have an account? <Anchor onClick={() => history.push('/signup')}>Sign up</Anchor>
+          Don't have an account? <Anchor onClick={() => navigate('/signup')}>Sign up</Anchor>
         </div>
       </div>
     </div>

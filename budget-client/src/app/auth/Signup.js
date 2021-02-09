@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {authenticate, resetError} from 'app/auth/Auth'
 import {Anchor} from 'components'
-import {history} from '../../history'
+import {navigate} from 'navigation'
 
 const enhance = connect(
   state => ({
@@ -38,7 +38,7 @@ export class Login extends Component {
 
     const data = await this.props.authenticate('signup', this.state)
 
-    return data.success ? history.push('/') : this.setState({loading: false, error: data.error})
+    return data.success ? navigate('/') : this.setState({loading: false, error: data.error})
   }
   render() {
     const {loading, error} = this.state
@@ -71,7 +71,7 @@ export class Login extends Component {
             </button>
         </form>
         <div className="mx-auto">
-          Already have an account? <Anchor onClick={() => history.push('/login')}>Sign in</Anchor>
+          Already have an account? <Anchor onClick={() => navigate('/login')}>Sign in</Anchor>
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ import {Switch, Route} from 'react-router-dom'
 import {withRouter} from 'react-router-dom'
 import {Dashboard} from 'app/dashboard'
 import {connect} from 'react-redux'
-import {history} from '../history'
+import {navigate} from 'navigation'
 import {smartLoad} from 'app/auth/Auth'
 import LoadingScreen from 'app/LoadingScreen'
 
@@ -48,7 +48,7 @@ class Routing extends React.Component {
         return this.renderRoutes()
       }
 
-      history.push('/login')
+      navigate('/login')
 
       return this.renderRoutes()
     }

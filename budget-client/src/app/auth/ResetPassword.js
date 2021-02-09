@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Anchor} from 'components'
-import {history} from '../../history'
+import {navigate} from 'navigation'
 import {api} from 'app/api'
 
 export class ResetPassword extends Component {
@@ -45,7 +45,7 @@ export class ResetPassword extends Component {
           </button>
         </form>}
         <div className="flex justify-center">
-          <Anchor onClick={() => history.push('/login')}>Back to Sign In</Anchor>
+          <Anchor onClick={() => navigate('/login')}>Back to Sign In</Anchor>
         </div>
       </div>
     </div>

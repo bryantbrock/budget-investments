@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {
   getLinkToken, loadBankTransactions,
 } from 'app/finances/Finances'
-import {history} from '../../history'
+import {navigate} from 'navigation'
 import {Summary, Details} from 'app/dashboard'
 import {api} from 'app/api'
 
@@ -47,7 +47,7 @@ export class Dashboard extends Component {
   logout() {
     localStorage.clear()
 
-    history.push('/login')
+    navigate('/login')
   }
   render() {
     const {token, loading} = this.state
