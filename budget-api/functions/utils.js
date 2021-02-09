@@ -12,7 +12,11 @@ exports.combine = (obj, obj2, obj3 = {}) => Object.assign({}, obj, obj2, obj3)
 
 exports.sum = item => {
   if (typeof item === "object") {
-    return item.reduce((a, b) => a + b)
+    try {
+      return item.reduce((a, b) => a + b)
+    } catch (e) {
+      return 0
+    }
   }
 }
 

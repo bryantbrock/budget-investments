@@ -55,7 +55,9 @@ class Routing extends React.Component {
 
     this.props.smartLoad()
 
-    return smartLoading ? <LoadingScreen /> : this.renderRoutes()
+    return smartLoading ? <div className="flex justify-center w-full pt-40">
+      <div className="spinner spinner-md" />
+    </div> : this.renderRoutes()
   }
 }
 

@@ -2,6 +2,14 @@ import React, { Component } from 'react'
 import {Currency} from 'app/dashboard/utils'
 import {connect} from 'react-redux'
 
+
+const tableHeaders = [
+  'Date',
+  'Delta',
+  'Details',
+  'Bank',
+]
+
 const enhance = connect(
   state => ({
     transactions: state.finances.transactions
@@ -9,27 +17,33 @@ const enhance = connect(
 )
 
 export class Details extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {tab: 'Transactions'}
+  }
   render() {
     const {transactions} = this.props
 
-    const classes = {
-      main: 'flex bg-gray-100 p-2 rounded mb-2',
-      entry: 'pr-2',
-    }
-
-    // TODO: place transactions chronologically,
-    // not by institute.
-
     return <div>
-      {transactions.map(institute =>
-        institute.transactions.map(transaction => <div className={classes.main}>
-          <div className={classes.entry}>{transaction.date}</div>
-          <Currency value={transaction.amount} className={classes.entry} />
-          <div className={classes.entry}>{transaction.name}</div>
-          <div className={classes.entry}>{transaction.city}</div>
-          <div className={classes.entry}>{transaction.region}</div>
-        </div>)
-      )}
+      <table className="details">
+        <thead>
+          <tr>
+            {tableHeaders.map(name => <th>{name}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {transactions.map(inst =>
+            inst.transactions.map(({date, amount, name}) =>
+              <tr>
+                <td>{date}</td>
+                <td><Currency value={amount} /></td>
+                <td>{name}</td>
+                <td>{inst.institution}</td>
+              </tr>
+            )
+          )}
+        </tbody>
+      </table>
     </div>
   }
 }

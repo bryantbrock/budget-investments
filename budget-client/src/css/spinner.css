@@ -33,10 +33,19 @@
   height: 50px
 }
 
-.spinner:not(:required):before {
+.spinner-white:not(:required):before {
   content: '';
   border-radius: 50%;
   border: 1.5px solid #ffffff;
+  border-top-color: #45454500;
+  animation: spinner .6s linear infinite;
+  -webkit-animation: spinner .6s linear infinite;
+}
+
+.spinner:not(:required):before {
+  content: '';
+  border-radius: 50%;
+  border: 1.5px solid #454545;
   border-top-color: #45454500;
   animation: spinner .6s linear infinite;
   -webkit-animation: spinner .6s linear infinite;

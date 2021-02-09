@@ -14,14 +14,23 @@ class Summary extends Component {
       {overUnder, income, expenses}
     } = this.props
 
+    const wrapper = 'flex'
+    const title = 'font-bold text-2xl pr-4'
+
     return <div className="pr-20">
       <div>
-        <h1>Profit</h1>
-        <Currency value={overUnder} className="pb-5" />
-        <h1>Income</h1>
-        <Currency value={income} className="pb-5" />
-        <h1>Expenses</h1>
-        <Currency value={expenses} className="pb-5" />
+        <div className={wrapper}>
+          <label className={title}>Profit</label>
+          <Currency value={overUnder} className="pb-5 text-xl" />
+        </div>
+        <div className={wrapper}>
+          <label className={title}>Income</label>
+          <Currency value={income} className="pb-5 text-xl" />
+        </div>
+        <div className={wrapper}>
+          <label className={title}>Expenses</label>
+          <Currency value={expenses} className="pb-5 text-xl" />
+        </div>
       </div>
 
     </div>

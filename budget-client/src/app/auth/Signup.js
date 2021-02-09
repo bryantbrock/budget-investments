@@ -67,7 +67,7 @@ export class Login extends Component {
             value={this.state.confirmPassword}
             onChange={this.onChange}/>
             <button type="submit" className="py-4 flex justify-center text-lg">
-              {loading ? <div className="spinner spinner-sm" /> : 'Get started'}
+              {loading ? <div className="spinner spinner-white spinner-sm" /> : 'Get started'}
             </button>
         </form>
         <div className="mx-auto">

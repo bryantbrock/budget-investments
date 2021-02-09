@@ -41,7 +41,7 @@ export class ResetPassword extends Component {
             value={this.state.email}
             onChange={this.onChange}/>
           <button type="submit" className="py-4 flex justify-center">
-            {loading ? <div className="spinner spinner-sm" /> : 'Reset Password'}
+            {loading ? <div className="spinner spinner-white spinner-sm" /> : 'Reset Password'}
           </button>
         </form>}
         <div className="flex justify-center">

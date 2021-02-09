@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {PlaidLink} from 'react-plaid-link'
 import {connect} from 'react-redux'
 import {
-  getLinkToken, loadBankTransactions,
+  getLinkToken, loadBankTransactions, addBankToken,
 } from 'app/finances/Finances'
 import {navigate} from 'navigation'
 import {Summary, Details} from 'app/dashboard'
@@ -12,7 +12,11 @@ const enhance = connect(
   state => ({
     user: state.auth.user,
   }),
-  {getLinkToken, loadBankTransactions}
+  {
+    getLinkToken,
+    loadBankTransactions,
+    addBankToken,
+  }
 )
 
 export class Dashboard extends Component {
@@ -31,10 +35,14 @@ export class Dashboard extends Component {
     this.setState({loading: false})
   }
   async onSuccess(token, metadata) {
-    const {addBankToken, user} = this.props
+    this.setState({loading: true})
+    const {addBankToken, loadBankTransactions, user} = this.props
     const {data} = await api.post(`/exchange-token/${token}`)
 
-    addBankToken(user, data, metadata)
+    await addBankToken(user, data, metadata)
+    await loadBankTransactions(user.uid)
+
+    this.setState({loading: false})
   }
   async fetchToken() {
     const {getLinkToken, user} = this.props
@@ -71,10 +79,10 @@ export class Dashboard extends Component {
           Log Out
         </button>
       </div>
-      <div className="flex justify-center pt-20">
+      <div className="flex justify-center pt-10">
         {loading && <div className="spinner spinner-md" />}
         {!loading && bankConnected &&
-          <div className="flex justify-center pt-20">
+          <div className="flex pt-8 w-11/12 mx-auto justify-between">
             <Summary />
             <Details />
           </div>}
