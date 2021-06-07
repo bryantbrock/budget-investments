@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, {useState, useEffect} from 'react'
+import {useSelector} from 'react-redux'
 import {authenticate, resetError} from 'app/auth/Auth'
 import {Anchor} from 'components'
 import {navigate} from 'navigation'
@@ -13,6 +13,10 @@ const enhance = connect(
     resetError,
   }
 )
+
+export default () => {
+  
+}
 
 export class Login extends Component {
   constructor(props) {

@@ -8,6 +8,7 @@ const {
   createLinkToken,
   exchangeToken,
   getTransactions,
+  updateModeLinkToken,
 } = require('./plaid')
 const {
   signup,
@@ -21,6 +22,7 @@ const {
 
 // Routes
 app.post('/create-link-token/:uid', createLinkToken)
+app.post('/modify-link-token/:uid', updateModeLinkToken)
 app.post('/exchange-token/:publicToken', exchangeToken)
 app.post('/add-bank-token/:uid', addBankToken)
 app.get('/transactions/:uid', getTransactions)

@@ -60,6 +60,18 @@ export const getLinkToken = uid => async dispatch => {
   return res.data.linkToken
 }
 
+export const getModifyLinkToken = uid => async dispatch => {
+  let res
+  try {
+    res = await api.post(`/modify-link-token/${uid}`, {institution: 'Wells Fargo'})
+
+  } catch (err) {
+    dispatch(Finances.actions.error(err))
+  }
+
+  return res.data.linkToken
+}
+
 const summarize = data => {
   let overUnder = 0
   let income = 0
@@ -82,7 +94,7 @@ export const loadBankTransactions = uid => async dispatch => {
     dispatch(Finances.actions.loadSummary(summarize(data)))
     dispatch(Finances.actions.loadTransactions(data))
   } catch (err) {
-    dispatch(Finances.actions.error(err))
+    dispatch(Finances.actions.error(err.response.data))
   }
 }
 

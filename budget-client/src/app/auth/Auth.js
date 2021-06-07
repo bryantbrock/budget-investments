@@ -69,7 +69,7 @@ export const authenticate = (type, data) => async dispatch => {
 }
 
 export const smartLoad = () => async dispatch => {
-  // TODO: clear storage if expired
+  // TODO: clear storage if token is expired
   try {
     const userUid = localStorage.getItem('userId')
     const user = await api.get(`/user/${userUid}`)

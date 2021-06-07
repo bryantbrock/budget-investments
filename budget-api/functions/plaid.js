@@ -3,6 +3,8 @@ const plaid = require('plaid')
 const {db} = require('./admin')
 const {sum, cleanAmount, combine} = require('./utils')
 
+const clientName = 'Plaid Quickstart'
+
 const client = new plaid.Client({
   clientID: '5e6ee25f8bf3880012c90ad0',
   secret: '5a8242dfb0db50336ad67fab42f2a6',
@@ -10,7 +12,7 @@ const client = new plaid.Client({
 })
 
 getAccessTokens = async req => {
-  const {uid, institution: inst = null} = req.body
+  const {institution: inst = null} = req.body
 
   let tokens
   try {
@@ -26,9 +28,9 @@ getAccessTokens = async req => {
       const token = bankTokens.filter(({institution}) => institution === inst)
 
       tokens = token
+    } else {
+      tokens = bankTokens
     }
-
-    tokens = bankTokens
 
   } catch (err) {
     return res.status(500).json({error: err})
@@ -43,7 +45,7 @@ exports.createLinkToken = async (req, res) => {
       user: {
         client_user_id: req.params.uid,
       },
-      client_name: 'Plaid Quickstart',
+      client_name: clientName,
       products: ['transactions'],
       country_codes: ['US'],
       language: 'en',
@@ -53,6 +55,23 @@ exports.createLinkToken = async (req, res) => {
   } catch (e) {
     return res.status(400).json({error: e.message})
   }
+}
+
+exports.updateModeLinkToken = async (req, res) => {
+  const [{accessToken}] = await getAccessTokens(req)
+
+  console.log(accessToken)
+
+  return client.createLinkToken({
+    user: {
+      client_user_id: req.params.uid,
+    },
+    client_name: clientName,
+    country_codes: ['US'],
+    language: 'en',
+    access_token: accessToken,
+  }).then(response => res.status(200).json({linkToken: response.link_token}))
+  .catch(err => res.status(401).json(err))
 }
 
 exports.exchangeToken = async (req, res) => {
@@ -104,4 +123,5 @@ exports.getTransactions = async (req, res) => {
       summary: {overUnder, expenses, income}
     }
   })).then(result => res.status(200).json(result))
+    .catch(err => res.status(401).json({error: err}))
 }

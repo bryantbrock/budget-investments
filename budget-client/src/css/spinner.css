@@ -42,7 +42,7 @@
   -webkit-animation: spinner .6s linear infinite;
 }
 
-.spinner:not(:required):before {
+.spinner-black:not(:required):before {
   content: '';
   border-radius: 50%;
   border: 1.5px solid #454545;
